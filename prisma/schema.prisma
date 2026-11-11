@@ -1,0 +1,51 @@
+// Prisma schema for ScholarSphere — scholarship directory for international students
+// PostgreSQL provider. Set DATABASE_URL in .env (see .env.example)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Scholarship {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  provider       String
+  country        String
+  region         String // Europe | North America | Asia | Oceania | Africa | Global
+  level          String // Undergraduate | Masters | PhD | Undergraduate, Masters...
+  fundingType    String // Fully Funded | Partially Funded
+  amount         String // e.g. "Full tuition + £1,300/month stipend"
+  deadline       DateTime
+  description    String   @db.Text
+  eligibility    String   @db.Text
+  benefits       String   @db.Text
+  howToApply     String   @db.Text
+  field          String // e.g. "All fields"
+  applicationUrl String
+  officialUrl    String
+  featured       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([deadline])
+  @@index([region])
+  @@index([level])
+  @@index([featured])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
